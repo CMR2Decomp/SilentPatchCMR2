@@ -5,6 +5,9 @@ this time I have gone back to one of the very first games I played and made it c
 
 NOTE: This SilentPatch was initially released in August 2015 - but its source code was not public until now.
 
+## CMR2Decomp 2025 Updates
+- Restored the network leaderboard functionality
+
 ## Featured fixes
 * The game now handles ALL aspect ratios properly.
 That means the game will not be horribly scretched when playing in widescreen anymore.
