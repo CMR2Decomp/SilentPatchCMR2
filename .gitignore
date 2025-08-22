@@ -59,6 +59,7 @@ TestResult.xml
 _Chutzpah*
 
 # Visual C++ cache files
+.vs/
 ipch/
 *.aps
 *.ncb
