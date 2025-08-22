@@ -102,7 +102,7 @@ void DrawSPText()
 {
 	unsigned char	colour[] = { 255, 255, 255, 200 };
 
-	RenderText(0, "SPCMR2 Build 2 ("__DATE__")", 10, pTheGame->m_dwHeight - 25, colour, 0);
+	RenderText(0, "SPCMR2 Build 2 (" __DATE__ ")", 10, pTheGame->m_dwHeight - 25, colour, 0);
 }
 
 /*HANDLE& hLogFile = *(HANDLE*)0x66734C;
