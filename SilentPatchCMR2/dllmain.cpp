@@ -31,6 +31,10 @@ DWORD& dwCurrentWindow = *(DWORD*)0x663DAC;
 
 MSG& Msg = *(MSG*)0x663C68;
 
+int& nLeaderboardId = *(int*)0x516A0C;
+int& nTotalLeaderboards = *(int*)0x535B88;
+char* leaderboardData = (char*)0x533A08;
+
 void SetHDPath(const char* pPath)
 {
 	strcpy(HDPath, pPath);
@@ -215,6 +219,41 @@ void __declspec(naked) FrontendDrawHook()
 	}
 }
 
+// 40E3F0
+bool ReadNetworkLeaderboard()
+{
+	bool ret = false;
+
+	FILE* fd = fopen("NetworkLeaderboards\\leaderboards.nlb", "r");
+	if (fd != nullptr) {
+		fseek(fd, 0, SEEK_END);
+		size_t size = ftell(fd);
+		fseek(fd, 0, SEEK_SET);
+
+		if (size == 0x2088) {
+			fread(&nLeaderboardId, sizeof(nLeaderboardId), 1, fd);
+			fread(&nTotalLeaderboards, sizeof(nTotalLeaderboards), 1, fd);
+			fread(leaderboardData, 0x2080, 1, fd);
+			ret = true;
+		}
+		fclose(fd);
+	}
+
+	return ret;
+}
+
+// 40E470
+void WriteNetworkLeaderboard()
+{
+	FILE* fd = fopen("NetworkLeaderboards\\leaderboards.nlb", "wb");
+	if (fd != nullptr) {
+		fwrite(&nLeaderboardId, sizeof(nLeaderboardId), 1, fd);
+		fwrite(&nTotalLeaderboards, sizeof(nTotalLeaderboards), 1, fd);
+		fwrite(leaderboardData, 0x2080, 1, fd);
+		fclose(fd);
+	}
+}
+
 void ApplyHooks()
 {
 	using namespace Memory;
@@ -291,6 +330,9 @@ void ApplyHooks()
 	InjectHook(0x422D61, GetFOV, PATCH_CALL);
 	InjectHook(0x422DAA, GetFOV, PATCH_CALL);
 
+	// Fix loading/saving of leaderboards
+	InjectHook(0x40E3F0, ReadNetworkLeaderboard, PATCH_JUMP);
+	InjectHook(0x40E470, WriteNetworkLeaderboard, PATCH_JUMP);
 	
 	// Re-apply VirtualProtect on .text section
 	DWORD		dwProtect;
